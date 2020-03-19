@@ -7,25 +7,36 @@ const formattedData = data.map((row, index) => {
   return {...row, name: index + ' ' + row.name};
 });
 
-class ListRow extends Component {
-  render() {
-    return (
-      <View>
-        <Text>{this.props.name}</Text>
-      </View>
-    );
-  }
-}
-
 export default class App extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      startTime: Date.now(),
+      endTime: 0,
+      renderTime: 0,
+    };
+  }
+
+  componentDidMount() {
+    const {startTime} = this.state;
+    const endTime = Date.now();
+    this.setState({
+      endTime: endTime,
+      renderTime: endTime - startTime,
+    });
+  }
+
   render() {
-    const row = <ListRow name={'Jai Shree Ram'} />;
-    console.log('ROW IS : ', row);
+    const {renderTime} = this.state;
     return (
       <View style={styles.container}>
+        <Text style={styles.renderTime}>
+          {' '}
+          LOAD COMPLETE TIME : {renderTime} ms{' '}
+        </Text>
         <RecyclerView
           style={styles.container}
-          // row={<ListRow name={'Jai Shree Ram'} />}
           src={formattedData}
           pullToRefresh={true}
           infiniteScroll={false}
@@ -61,5 +72,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
+  },
+  renderTime: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    padding: 4,
   },
 });
